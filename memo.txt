@@ -1,0 +1,241 @@
+C++ 환경설정...
+IDE tool 에 의존해서 하면 곤란해짐..
+
+std::cout<<"hello"<<std::endl;
+-> 이건 우리가 알아들을 수 있는 언어
+
+./hello
+-> 이건 컴퓨터가 이해할 수 있는 언어
+
+.cpp 는 
+내가 갖고 있는 파일을 컴퓨터가 이해할 수 있는 문법으로 변환해서 실행시킴
+
+빌드가 어떻게 이루어지는지.. 알아야 한다
+
+이 빌드는 리눅스에서 하는걸 알아봐야 한다.
+
+펭귄으로 가서
+~ 에서 mkdir workspace
+
+~ 가  /mnt/c/Users/USER  임
+cd workspace
+여기에 c++ 작업한걸 넣어줄거임
+
+$ mkdir helloworld && cd helloworld
+폴더 만들고 들어감
+
+$ code .
+하면 vs code 가 열림
+
+
+Remote -wsl
+c / c++ 
+설치 확장프로그램 vs code
+vscode 껐다가
+다시
+. code 로 켜고
+
+
+
+함수 작성
+DataType Function Name(){
+
+}
+
+메인함수는 항상 실행을 안시켜도 돌아감
+
+int main(){
+    return 0;
+}
+
+[IO 패키지]
+io 내장 패키지가 있음
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+-> 일단 이거 안쓰고 해보자
+
+std::cout << "hello world" << std::endl;
+
+std 라는 객체 안에 있다고 생각해주자
+
+namespace 를 써보자
+
+std 안에 있는 하위 객체들 다 쓸 수 있게
+
+이름이라고 치면
+namespace 
+std 성 이다.
+
+
+이제부터는 ; 꼭 꼭 붙여줘야 한다.
+
+이제 이 코드를 실행해야 한다,
+-----------------------------------------
+코드 변환...
+해주는 녀석을 설치해야 한다.
+
+팽귄 켜서
+
+리눅스에서 패키지 다운받는것
+sudo apt-get 설치할것
+
+$ sudo apt-get update 
+-최신버전으로 업데이트
+
+실질적으로 빌드하는것을 설치해보자
+$ sudo apt-get install build-essential gdb
+
+build-essential 랑 gdb 두개 설치하는 것
+
+설치가 잘 되었는지 확인
+$ whereis g++
+$ whereis gdb
+
+경로가 뜨면 잘 된거임
+
+# g++ 이랑 gdb 가 무엇인가?
+
+build-essential -> 디버깅 용도로 사용하는 녀석
+
+g++ 빌드내용
+- 그럼 코드가 빌드용으로 변환이 됨
+
+# 빌드
+$ g++ -o hello hello.cpp 
+hello.cpp 를 hello 로 빌드시킬것
+-o 는 out 이라는 뜻
+
+$ ls
+hello 라는 파일이 만들어졌는가?
+
+$ cat hello 
+하면 뭔가 외계어 같은게 나옴
+
+# 실행
+$ ./hello
+하면 실행이 됨
+
+빌드랑 실행결과가 다른것...
+컴퓨터가 이해할 수 있는 언어로 바꿨기 때문,,
+
+--------------
+[hello.cpp]   ---- g++로 빌드---->      [hello]
+
+코드 작성                                기계어로 작성된 파일
+int main(){                              실행 ./hello 
+    ....                                 하면 출력이 됨
+}
+
+
+혹은 
+#include <stdio.h>
+printf("helloworld");
+이것도 가능~
+
+빌드 순서도 중요..
+
+백준 1000번째 문제 해보자
+
+변수든 함수든 선언할때 앞에 DataType 을 정해줘야 함
+int main(){}
+int a = 0;
+
+A+B 
+
+빌드 : g++ -o hello hello.cpp   
+실행 : ./hello
+
+------------
+파일을 두개 만들어보자
+
+1. header 파일 생성
+[ingoo.h]
+
+#include <iostream>
+using namespace std;
+
+int ingoo(){
+    cout << "hello ingoo" << endl;
+    return 0;
+}
+
+2. header 파일 include
+#include "파일명.h"
+
+[hello.cpp]
+
+#include <iostream>
+#include <string>
+#include "ingoo.h"
+using namespace std;
+
+int main(){
+    ingoo();
+    return 0;
+}
+
+빌드 : g++ -o hello hello.cpp
+실행 : ./hello
+
+------------------------
+빌드했던 파일들이 남아있어서...
+
+빌드를 유연하게 하는 방법이 있다.
+# make
+
+make 를 안쓰고 shell 스크립트로도 가능하긴하다.
+
+ex) 파일 총 3개를 빌드해야 할 경우
+hello.cpp world.cpp ingoo.cpp
+
+build.sh 를 생성해서
+g++ -o hello hello.cpp
+g++ -o world world.cpp
+g++ -o ingoo ingoo.cpp
+
+sh build.sh
+
+이렇게 되기는 한다. 
+하지만 단점...
+
+매번 저 3개를 전부 다 빌드 해야 한다.
+
+그래서 make 파일을 만든다.
+make > 원하는 디렉토리에 만들어서 보낼 수 있다.
+
+./helloworld 폴더에
+hello.cpp 
+world.cpp 
+ingoo.cpp
+가 존재한다고 하자
+
+빌드를 하게 되면
+./helloworld/build
+build 폴더를 만들어서
+hello
+world
+ingoo
+생성됨
+
+이런식으로 폴더 구조..
+
+src 폴더 안에서도 
+기능 단위별로 만들 수 있다.
+빌드가 까다로워 진다.
+
+그래서 이걸 쉽게 빌드하는걸 배워본다.
+------------------------
+
+
+솔리디티는 우리가 배울 두번째 언어가 될 것이다.
+
+c++로
+1000번 문제
+if 문
+for 문
+string 조작 관련
+배열 문제..
+queue 자료구조 큐 문제 해보기
